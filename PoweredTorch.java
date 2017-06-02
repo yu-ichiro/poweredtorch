@@ -39,6 +39,11 @@ public class PoweredTorch
 		GameRegistry.registerBlock(new BlockPoweredTorch(15).setBlockTextureName("redstone_torch_on"), "blockPoweredTorch15");
 		
 		GameRegistry.addRecipe(new ItemStack(GameRegistry.findBlock(PoweredTorch.MODID, "blockPoweredTorch0")), "R", "T", 'R', Items.redstone, 'T', Blocks.torch);
+		
+		// Alternative Recipe
+		// It wouldn't require coal/charcoal but takes 3 more stick for 4 torches
+		GameRegistry.addRecipe(new ItemStack(GameRegistry.findBlock(PoweredTorch.MODID, "blockPoweredTorch0")), "R", 'R', Blocks.redstone_torch);
+		
 	}
     
     @EventHandler
