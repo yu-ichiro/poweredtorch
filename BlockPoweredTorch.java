@@ -9,9 +9,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockTorch;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.util.ChatComponentText;
+
 
 public class BlockPoweredTorch extends BlockTorch
 {
@@ -20,31 +20,26 @@ public class BlockPoweredTorch extends BlockTorch
 	public BlockPoweredTorch(int level) {
         super();
         this.lightLevel = level;
-        this.setLightLevel(this.lightLevel+1/16F);
+        this.setLightLevel(this.lightLevel+1.0F/16.0F);
         this.setCreativeTab(null);
         this.setBlockName("blockPoweredTorch");
     }
-	
-   @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float posX, float posY, float posZ){
-        //ブロックを右クリックした際の動作
-    	if (world.isRemote == false) {
-    		int next = player.isSneaking() ? lightLevel - 1 : lightLevel + 1;
-    		if (next < 0 || next > 15) return true;
-    		Block blk = GameRegistry.findBlock(PoweredTorch.MODID, "blockPoweredTorch"+next);
-    		player.addChatComponentMessage(new ChatComponentText("Light level: " +next));
-    		world.setBlock(x, y, z, blk, world.getBlockMetadata(x, y, z),3);
-    	}
-        return true;
-    }
+	@Override
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+		if(!world.isRemote) {
+			int next = Utils.mod(player.isSneaking() ? lightLevel - 1 : lightLevel + 1, 16);
+			Block blk = GameRegistry.findBlock(PoweredTorch.MODID, "blockPoweredTorch"+next);
+			player.addChatComponentMessage(new ChatComponentText("Light level: " +next));
+			world.setBlock(x, y, z, blk, world.getBlockMetadata(x, y, z),3);
+		}
+		return true;
+	}
 
+    // It seems overriding this method is redundant but the lighting goes wrong without it. 
     @Override
-    public int getLightValue(IBlockAccess world, int posX, int posY, int posZ) {
-    	 return lightLevel;
+    public int getLightValue() {
+    	return this.lightLevel;
     }
-     /**
-     * Returns the quantity of items to drop on block destruction.
-     */
     
     @Override
     public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_)
